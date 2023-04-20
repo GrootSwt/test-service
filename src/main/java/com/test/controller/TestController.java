@@ -1,7 +1,8 @@
 package com.test.controller;
 
-import com.test.base.result.ErrorResponse;
+import com.test.base.exception.BusinessRuntimeException;
 import com.test.base.result.SuccessResponse;
+import com.test.business.bean.User;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,23 +18,21 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(value = "test")
 public class TestController {
 
-    @GetMapping("getSuccessList")
-    public SuccessResponse<List<String>> getSuccessList() throws InterruptedException {
-        log.info("getSuccessList start");
-        TimeUnit.MILLISECONDS.sleep(2000);
-        ArrayList<String> list = new ArrayList<>(4);
-        list.add("hello");
-        list.add("world");
-        log.info("getSuccessList end");
+    @GetMapping("getUserList")
+    public SuccessResponse<List<User>> getSuccessList(HttpServletResponse response) throws InterruptedException {
+        TimeUnit.MILLISECONDS.sleep(1000);
+        ArrayList<User> list = new ArrayList<>();
+        // throw new BusinessRuntimeException("get user list error");
+        User user = new User("1", "张三", "男", 18);
+        list.add(user);
         return SuccessResponse.success(list);
     }
 
-    @GetMapping("getErrorList")
-    public ErrorResponse getError(HttpServletResponse response) throws InterruptedException{
-        log.info("getErrorList start");
-        TimeUnit.MILLISECONDS.sleep(1000);
-        response.setStatus(404);
-        log.info("getErrorList end");
-        return ErrorResponse.failure("get failure");
+    @GetMapping("getUserInfo")
+    public SuccessResponse<User> getUserInfo(HttpServletResponse response) throws InterruptedException {
+        TimeUnit.MILLISECONDS.sleep(1500);
+        throw new BusinessRuntimeException("get user info error");
+        // User user = new User("1", "张三", "男", 18);
+        // return SuccessResponse.success(user);
     }
 }
